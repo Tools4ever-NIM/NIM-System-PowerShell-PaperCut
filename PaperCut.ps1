@@ -47,6 +47,12 @@ function Idm-SystemInfo {
                 description = 'Number of records per page'
                 value = '250'
             }
+			@{
+                name = 'ignore_ssl_trust'
+                type = 'checkbox'
+                label = 'Skip SSL Trust Check'
+                value = $false                  # Default value of checkbox item
+            }
             @{
                 name = 'use_proxy'
                 type = 'checkbox'
@@ -502,13 +508,30 @@ function Invoke-PaperCutRequest {
         [string] $Body
 
     )
-    $uri = "https://{0}:9192/rpc/api/xmlrpc" -f $SystemParams.hostname
+    if($system_params.ignore_ssl_trust) {
+		add-type @"
+	using System.Net;
+	using System.Security.Cryptography.X509Certificates;
+	public class TrustAllCertsPolicy : ICertificatePolicy {
+		public bool CheckValidationResult(
+			ServicePoint srvPoint, X509Certificate certificate,
+			WebRequest request, int certificateProblem) {
+			return true;
+		}
+	}
+"@
+[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Ssl3, [Net.SecurityProtocolType]::Tls, [Net.SecurityProtocolType]::Tls11, [Net.SecurityProtocolType]::Tls12
+	}
+	
+	$uri = "https://{0}:9192/rpc/api/xmlrpc" -f $SystemParams.hostname
 
    
     $headers= @{
 		'Content-Type' = 'text/xml;charset=UTF-8'
 	}
-
+	
     try {
 		$splat = @{
             Method = "POST"
