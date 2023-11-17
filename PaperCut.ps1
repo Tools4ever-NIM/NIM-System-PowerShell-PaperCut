@@ -454,7 +454,7 @@ function Idm-UsersRename {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -471,21 +471,25 @@ function Idm-UsersRename {
                                 </param>
                                 <param>
                                     <value>
-                                        <int>{1}</int>
+                                        <string>{1}</string>
                                     </value>
                                 </param>
                                 <param>
                                     <value>
-                                        <int>{2}</int>
+                                        <string>{2}</string>
                                     </value>
                                 </param>
                             </params>
                         </methodCall>' -f $system_params.authtoken, $properties.Username, $properties.NewUsername
 
             Log info ("Renaming User ({0}) to ({1})" -f $properties.Username, $properties.NewUsername)
+
             $response = Invoke-PaperCutRequest -SystemParams $system_params -FunctionParams $function_params -Body $xmlRequest
             
-            [PSCustomObject]@{
+			Log info ("Completed Rename for ({0}) to ({1})" -f $properties.Username, $properties.NewUsername)
+            
+			# Out new object
+			[PSCustomObject]@{
                 Username = $properties.NewUsername
             }
         }
