@@ -1,13 +1,13 @@
-# NIM-System-PowerShell-PaperCut
-PaperCut
+# PaperCut
+<img src="https://github.com/Tools4ever-NIM/NIM-System-PowerShell-PaperCut/assets/24281600/50f28ba1-d141-4e91-b345-7bf37a476f69" width="256px" />
 
-![image](https://github.com/Tools4ever-NIM/NIM-System-PowerShell-PaperCut/assets/24281600/50f28ba1-d141-4e91-b345-7bf37a476f69)
+## Data Tables
+- Users
 
 
-# Available Actions
-- Get Users
-- Rename User
+## Actions
+- Users
+    - Rename
 
-# Setup Authentication
-- See Security section of API Documention
-    - [https://www.papercut.com/help/manuals/ng-mf/common/tools-web-services/#security](https://www.papercut.com/help/manuals/ng-mf/common/tools-web-services/#security)
+# NIM Docs
+The official NIM documentation can be found at: https://docs.nimsuite.com
