@@ -327,11 +327,11 @@ function Idm-UsersRename {
                             </params>
                         </methodCall>' -f $system_params.authtoken, $properties.Username, $properties.NewUsername
 
-            Log info ("Renaming User ({0}) to ({1})" -f $properties.Username, $properties.NewUsername)
+            LogIO info 'Idm-UsersRename' -In @system_params -Properties $properties
 
             $response = Invoke-PaperCutRequest -system_params $system_params -function_params $function_params -Body $xmlRequest
             
-            Log info ("Completed Rename for ({0}) to ({1})" -f $properties.Username, $properties.NewUsername)
+            LogIO info 'Idm-UsersRename' -Out -Response $response
             
             # Out new object
             [PSCustomObject]@{
@@ -339,7 +339,7 @@ function Idm-UsersRename {
             }
         }
         catch {
-            Log error "Failed: $_"
+            LogIO error 'Idm-UsersRename' -Out -Response $_
             Write-Error $_
         }
     }
@@ -452,8 +452,6 @@ function Idm-UsersUpdate {
         </array>
     </value>
 '@ -f $prop.name, $prop.value
-            
-            Log info ("Updating Properties for User ({0}), ({1}) to ({2})" -f $function_params.username, $prop.Name, $prop.Value)
         } #end foreach
         # Example Updated Property
         <#
@@ -497,17 +495,20 @@ function Idm-UsersUpdate {
                                 </param>
                             </params>
                         </methodCall>' -f $system_params.authtoken, $properties.Username, $propertiesXML
-
+            
+            LogIO info 'Idm-UsersUpdate' -In -Parameters $function_params
+            
             $response = Invoke-PaperCutRequest -system_params $system_params -function_params $function_params -Body $xmlRequest
             
             # Output is a boolean.
             if ($response = 1) {
                 
-                Log info ("Completed Update Properties for ({0}), response: ({1})" -f $properties.Username, ($response | ConvertTo-Json -Depth 5))
+                LogIO info 'Idm-UsersUpdate' -Out -Response $response
             
             } else {
             
                 #Log error ("Failed to Update Properties for ({0}), response: ({1})" -f $properties.Username, ($response | ConvertTo-Json -Depth 5))
+                LogIO error 'Idm-UsersUpdate' -Out -Response $response
                 throw ("Failed to Update Properties for ({0}), response: ({1})" -f $properties.Username, ($response | ConvertTo-Json -Depth 5))
             
             }
