@@ -251,6 +251,7 @@ function Idm-UsersRead {
                     $i = 0
                     foreach($user in $userList) {
                         $i++
+                        
                         Log verbose "Processing user $($i) of $($userList.count)"
                         
                         $userObject = Get-UserProperties -system_params $system_params -function_params $function_params -username $user
@@ -494,24 +495,14 @@ function Idm-UsersUpdate {
                                     </value>
                                 </param>
                             </params>
-                        </methodCall>' -f $system_params.authtoken, $properties.Username, $propertiesXML
+                        </methodCall>' -f $system_params.authtoken, $function_params.Username, $propertiesXML
             
-            LogIO info 'Idm-UsersUpdate' -In -Parameters $function_params
+            LogIO info 'Idm-UsersUpdate' -In -Parameters $function_params # $xmlRequest
             
             $response = Invoke-PaperCutRequest -system_params $system_params -function_params $function_params -Body $xmlRequest
+
+            LogIO info 'Idm-UsersUpdate' -Out ($response)
             
-            # Output is a boolean.
-            if ($response = 1) {
-                
-                LogIO info 'Idm-UsersUpdate' -Out -Response $response
-            
-            } else {
-            
-                #Log error ("Failed to Update Properties for ({0}), response: ({1})" -f $properties.Username, ($response | ConvertTo-Json -Depth 5))
-                LogIO error 'Idm-UsersUpdate' -Out -Response $response
-                throw ("Failed to Update Properties for ({0}), response: ({1})" -f $properties.Username, ($response | ConvertTo-Json -Depth 5))
-            
-            }
             # Out new object
             Get-UserProperties -system_params $system_params -function_params $function_params -username $function_params.Username
         }
