@@ -21,7 +21,7 @@ function Idm-SystemInfo {
         [string] $ConnectionParams
     )
 
-    Log info "-Connection=$Connection -TestConnection=$TestConnection -Configuration=$Configuration -ConnectionParams='$ConnectionParams'"
+    Log verbose "-Connection=$Connection -TestConnection=$TestConnection -Configuration=$Configuration -ConnectionParams='$ConnectionParams'"
 
     if ($Connection) {
         @(
@@ -124,7 +124,7 @@ function Idm-SystemInfo {
         @()
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-OnUnload {
@@ -179,7 +179,7 @@ function Idm-UsersRead {
         [string] $FunctionParams
     )
     $Class = "User"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -230,10 +230,10 @@ function Idm-UsersRead {
                             </params>
                         </methodCall>' -f $system_params.authtoken, $userList.Count, $system_params.pagesize
 
-                        Log info ("Retrieving User List - Offset ($($userList.Count))")
+                        Log verbose ("Retrieving User List - Offset ($($userList.Count))")
                         $response = Invoke-PaperCutRequest -system_params $system_params -function_params $function_params -Body $xmlRequest
                         
-                        Log info "Retrieving User List - Returned ($($response.methodResponse.params.param.value.array.data.value.count))"
+                        Log verbose "Retrieving User List - Returned ($($response.methodResponse.params.param.value.array.data.value.count))"
 
                         if($response.methodResponse.params.param.value.array.data.value.count -lt 1) {
                             break
@@ -246,12 +246,13 @@ function Idm-UsersRead {
                         }
                     }   
                     
-                    Log info "Processing Users"
+                    Log verbose "Processing Users"
                     # Retrieve User Properties
                     $i = 0
                     foreach($user in $userList) {
                         $i++
-                        #Log info "Processing user $($i) of $($userList.count)"
+                        
+                        Log verbose "Processing user $($i) of $($userList.count)"
                         
                         $userObject = Get-UserProperties -system_params $system_params -function_params $function_params -username $user
                         
@@ -267,7 +268,7 @@ function Idm-UsersRead {
             $results
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-UsersRename {
@@ -279,7 +280,7 @@ function Idm-UsersRename {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -343,7 +344,7 @@ function Idm-UsersRename {
             Write-Error $_
         }
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 # https://www.papercut.com/help/manuals/ng-mf/common/tools-web-services/#:~:text=set%20to%20%27individual%27-,api.setUserProperties,-Set%20multiple%20user
@@ -384,7 +385,7 @@ function Idm-UsersUpdate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -510,7 +511,7 @@ function Idm-UsersUpdate {
             Write-Error $_
         }
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 # 
@@ -727,7 +728,7 @@ function Invoke-PaperCutRequest {
 
         if($system_params.use_proxy)
         {
-            Log info ("Using proxy for PaperCut Request")
+            Log verbose ("Using proxy for PaperCut Request")
             $splat["Proxy"] = $system_params.proxy_address
 
             if($system_params.use_proxy_credentials)
