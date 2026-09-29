@@ -1,4 +1,7 @@
 # PaperCut
+
+Read the [PaperCut integration documentation](https://docs.nimsuite.com/en/integrations/papercut) for connector details and related guides.
+
 <img src="https://github.com/Tools4ever-NIM/NIM-System-PowerShell-PaperCut/assets/24281600/50f28ba1-d141-4e91-b345-7bf37a476f69" width="256px" />
 
 ## Data Tables
